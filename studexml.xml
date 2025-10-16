@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE school SYSTEM "studex.dtd">
+    <school>
+<student no='1'>
+<name>kumar</name>
+<year>second</year>
+<dept>it</dept>
+</student>
+<student no='2'>
+<name>ravi</name>
+<year>tird</year>
+<dept>cse</dept>
+</student>
+</school>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html ng-app="movieApp">
+<head>
+  <meta charset="UTF-8">
+  <title>Movie Ticket Booking</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+  <style>
+    body { font-family: Arial; text-align: center; background: #f0f8ff; padding: 30px; }
+    h1 { color: #333; }
+    .seat-container { display: inline-block; text-align: left; margin-top: 20px; }
+    label { display: inline-block; width: 60px; margin: 5px; }
+    input[type="checkbox"]:disabled + span { color: red; font-weight: bold; }
+    button { padding: 8px 15px; border: none; border-radius: 5px; background: #4CAF50; color: white; cursor: pointer; }
+    button:hover { background: #45a049; }
+  </style>
+</head>
+<body ng-controller="MovieController">
+
+  <h1>🎬 Online Movie Ticket Booking</h1>
+
+  <div class="seat-container">
+    <div ng-repeat="seat in seats">
+      <label>
+        <input type="checkbox" ng-model="seat.selected" ng-disabled="seat.booked"> 
+        <span>{{seat.name}}</span>
+      </label>
+    </div>
+  </div>
+
+  <br><br>
+  <button ng-click="bookSeats()">Book Selected Seats</button>
+
+  <h3>🎟️ Booked Seats:</h3>
+  <p ng-if="bookedSeats.length === 0">No seats booked yet.</p>
+  <ul>
+    <li ng-repeat="b in bookedSeats">{{b.name}}</li>
+  </ul>
+
+  <script>
+    var app = angular.module('movieApp', []);
+
+    app.controller('MovieController', function($scope, $http) {
+
+      // Seat layout
+      $scope.seats = [
+        {name: 'A1'}, {name: 'A2'}, {name: 'A3'}, {name: 'A4'},
+        {name: 'B1'}, {name: 'B2'}, {name: 'B3'}, {name: 'B4'}
+      ];
+
+      $scope.bookedSeats = [];
+
+      // Load already booked seats from backend
+      function loadBookedSeats() {
+        $http.get("http://localhost:3000/booked").then(res => {
+          $scope.bookedSeats = res.data;
+
+          // Mark booked seats as disabled
+          $scope.seats.forEach(seat => {
+            if ($scope.bookedSeats.some(b => b.name === seat.name)) {
+              seat.booked = true;
+            }
+          });
+        });
+      }
+      loadBookedSeats();
+
+      // Book selected seats
+      $scope.bookSeats = function() {
+        let selected = $scope.seats.filter(s => s.selected && !s.booked);
+        if (selected.length === 0) {
+          alert("Please select at least one available seat!");
+          return;
+        }
+
+        $http.post("http://localhost:3000/book", selected).then(res => {
+          $scope.bookedSeats = res.data;
+
+          // Reset seat selection
+          $scope.seats.forEach(s => {
+            s.selected = false;
+            if ($scope.bookedSeats.some(b => b.name === s.name)) s.booked = true;
+          });
+
+          alert("Seats booked successfully!");
+        });
+      };
+    });
+  </script>
+
+</body>
+</html>

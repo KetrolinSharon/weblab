@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE bookstore SYSTEM "books.dtd">
+<bookstore>
+    <book id="b1">
+        <title>Machine Learning</title>
+        <author>Andrew Ng</author>
+        <price>500</price>
+    </book>
+    <book id="b2">
+        <title>Deep Learning</title>
+        <author>Ian Goodfellow</author>
+        <price>750</price>
+    </book>
+</bookstore>

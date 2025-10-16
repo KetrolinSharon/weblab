@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html ng-app="empApp">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+    <style>
+        .emp-directive{
+             border-radius: 8px;
+      width: 150px;
+      height: 120px;
+      border: 1px solid black;
+      padding: 15px;
+      margin: 10px;
+      text-align: center;
+      background-color: antiquewhite;
+      display: inline-block;
+            
+        }
+    </style>
+    <body ng-controller="empctrl">
+        <input type="text" placeholder="name" ng-model="name">
+        <emp-directive ng-repeat="e in employees|filter:name" data="e"> </emp-directive>
+        <script>
+            var app=angular.module('empApp',[]);
+             app.service('empservice',function()
+            {
+                this.getemp=function()
+                {
+                    return[
+                        {name:"Rahul",Salary:2000},
+                        {name:"Ravi",Salary:20},
+                        {name:"Rul",Salary:200}
+                    ]
+                };
+
+            });
+
+
+            app.factory('empfactory',function()
+        {
+            var fact={};
+            fact.getemp=function()
+            {
+                return[
+                     {name:"Rahul",Salary:2000},
+                        {name:"Ravi",Salary:20},
+                        {name:"Rul",Salary:200}
+
+                ]
+            };
+            return fact;
+        });
+
+        app.filter('salaryfilter',function()
+    {
+        return function(Salary)
+        {
+            if (Salary<100) return 'less';
+            else if(Salary<1000) return 'medium';
+            else return 'good';
+        }
+
+    });
+
+    app.directive('empDirective',function()
+{
+    return{
+        restrict:'E',
+        scope:{data:'='},
+            template:`<div class="emp-directive">
+                <p>name:{{data.name}}</p>
+                <p>slayy:{{data.Salary}}</p>
+                <p>condition:{{data.Salary|salaryfilter}}</p></div>`
+
+          
+        
+        };
+
+});
+app.controller('empctrl',function(empservice,$scope)
+{
+$scope.employees=empservice.getemp();
+});
+
+        </script>
+    </body>
+    </html>

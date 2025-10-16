@@ -1,0 +1,97 @@
+/* ======== HTML5 + CSS3 Styling ======== */
+
+/* 1. CSS3 Gradient Background */
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: linear-gradient(120deg, #89f7fe, #66a6ff);
+  margin: 0;
+  text-align: center;
+  color: #333;
+}
+
+/* 2. HTML5 Semantic Elements */
+header, main, footer {
+  padding: 20px;
+}
+
+/* 3. CSS3 Box Shadow + Rounded Corners */
+header {
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+h1 {
+  color: #0077cc;
+}
+
+/* 4. CSS3 Flexbox Layout */
+.form-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 20px auto;
+  max-width: 400px;
+}
+
+/* 5. CSS3 Transitions on Buttons */
+button {
+  padding: 8px 15px;
+  margin: 8px;
+  border: none;
+  border-radius: 5px;
+  background-color: #0077cc;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+button:hover {
+  background-color: #005fa3;
+  transform: scale(1.05);
+}
+
+/* 6. CSS3 Table Styling */
+table {
+  margin: 20px auto;
+  border-collapse: collapse;
+  width: 80%;
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+th {
+  background-color: #0077cc;
+  color: white;
+  text-transform: uppercase;
+}
+
+th, td {
+  padding: 12px 15px;
+  border-bottom: 1px solid #ccc;
+}
+
+.edit {
+  background-color: #28a745;
+}
+
+.delete {
+  background-color: #dc3545;
+}
+
+/* 7. CSS3 Animation for header */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+header {
+  animation: fadeIn 1s ease-in-out;
+}
+
+footer {
+  margin-top: 30px;
+  color: #222;
+  font-size: 14px;
+}

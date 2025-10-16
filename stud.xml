@@ -1,0 +1,22 @@
+<!DOCTYPE school[
+<!ELEMENT school (student+)>
+<!ELEMENT student (name,year,dept)>
+<!ATTLIST student no ID #REQUIRED>
+<!ELEMENT name (#PCDATA)>
+<!ELEMENT year (#PCDATA)>
+<!ELEMENT dept (#PCDATA)>
+]>
+
+
+<school>
+<student no='1'>
+<name>kumar</name>
+<year>second</year>
+<dept>it</dept>
+</student>
+<student no='2'>
+<name>ravi</name>
+<year>tird</year>
+<dept>cse</dept>
+</student>
+</school>

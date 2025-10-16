@@ -1,0 +1,20 @@
+<!DOCTYPE bank [
+  <!ELEMENT bank (account+)>
+  <!ELEMENT account (holder, balance, type)>
+  <!ATTLIST account accNo ID #REQUIRED>
+  <!ELEMENT holder (#PCDATA)>
+  <!ELEMENT balance (#PCDATA)>
+  <!ELEMENT type (#PCDATA)>
+]>
+<bank>
+  <account accNo="a101">
+    <holder>Suresh</holder>
+    <balance>50000</balance>
+    <type>Savings</type>
+  </account>
+  <account accNo="a102">
+    <holder>Lakshmi</holder>
+    <balance>120000</balance>
+    <type>Current</type>
+  </account>
+</bank>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="weatherApp">
+<head>
+  <meta charset="UTF-8">
+  <title>Weather Information App</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+  <style>
+    body {
+      font-family: Arial;
+      text-align: center;
+      background: linear-gradient(to right, #74ebd5, #ACB6E5);
+      color: #333;
+      padding-top: 50px;
+    }
+    .card {
+      background: white;
+      width: 300px;
+      margin: auto;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    input {
+      padding: 8px;
+      border: none;
+      border-radius: 5px;
+      margin-bottom: 10px;
+    }
+    button {
+      padding: 8px 15px;
+      border: none;
+      border-radius: 5px;
+      background: #4CAF50;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #45a049;
+    }
+  </style>
+</head>
+<body ng-controller="WeatherController">
+
+  <div class="card">
+    <h2>🌤 Weather Information</h2>
+    <input type="text" ng-model="city" placeholder="Enter city name">
+    <br>
+    <button ng-click="getWeather()">Get Weather</button>
+
+    <div ng-if="weather">
+      <hr>
+      <h3>{{ weather.name | uppercase }}</h3>
+      <p>Temperature: {{ weather.main.temp - 273.15 | number:1 }} °C</p>
+      <p>Weather: {{ weather.weather[0].description | capitalize }}</p>
+      <weather-icon icon="weather.weather[0].icon"></weather-icon>
+    </div>
+  </div>
+
+  <script>
+    // Step 1: Create AngularJS app
+    var app = angular.module('weatherApp', []);
+
+    // Step 2: Custom filter to capitalize
+    app.filter('capitalize', function() {
+      return function(input) {
+        return input ? input.charAt(0).toUpperCase() + input.slice(1) : '';
+      };
+    });
+
+    // Step 3: Custom directive to display weather icon
+    app.directive('weatherIcon', function() {
+      return {
+        restrict: 'E',
+        scope: { icon: '=' },
+        template: '<img ng-src="https://openweathermap.org/img/wn/{{icon}}@2x.png" alt="Weather Icon">'
+      };
+    });
+
+    // Step 4: Controller with dependency injection
+    app.controller('WeatherController', function($scope, $http) {
+      $scope.getWeather = function() {
+        var apiKey = 'b6907d289e10d714a6e88b30761fae22'; // Sample API key
+        var url = `https://api.openweathermap.org/data/2.5/weather?q=${$scope.city}&appid=${apiKey}`;
+
+        $http.get(url).then(function(response) {
+          $scope.weather = response.data;
+        }, function(error) {
+          alert('City not found! Please try again.');
+        });
+      };
+    });
+  </script>
+</body>
+</html>

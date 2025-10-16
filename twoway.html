@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html ng-app="TwowayApp">
+    <head>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    </head>
+    <body ng-controller="twowayctrl">
+        <input type="text" ng-model="twoway">
+        <p>she says:{{twoway}}</p>
+        <script>
+            var app=angular.module('TwowayApp',[]);
+            app.controller('twowayctrl',function($scope)
+        {
+            $scope.twoway="ketrolin ";
+        })
+        </script>
+    </body>
+</html>

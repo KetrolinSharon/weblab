@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html ng-app="todoApp">
+<head>
+  <meta charset="UTF-8">
+  <title>AngularJS To-Do List</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.3/angular.min.js"></script>
+  <style>
+    body { font-family: Arial; background: #f9f9f9; padding: 20px; }
+    .container { max-width: 500px; margin:auto; background:white; padding:20px; border-radius:10px; box-shadow:0 0 10px #ddd;}
+    input, button, select { padding:10px; margin:5px; }
+    li { list-style:none; padding:8px; border-bottom:1px solid #ddd;}
+    li.completed { text-decoration: line-through; color: gray;}
+  </style>
+</head>
+<body ng-controller="TodoController">
+
+<div class="container">
+  <h2>📝 My To-Do List</h2>
+  <input type="text" ng-model="newTask" placeholder="Enter new task">
+  <button ng-click="addTask()">Add</button>
+
+  <select ng-model="filterStatus">
+    <option value="">All</option>
+    <option value="true">Completed</option>
+    <option value="false">Pending</option>
+  </select>
+
+  <ul>
+    <li ng-repeat="t in tasks | filter:{completed: filterStatus}" ng-class="{completed: t.completed}">
+      <input type="checkbox" ng-model="t.completed" ng-change="updateTask(t)">
+      {{t.name}}
+      <button ng-click="deleteTask(t._id)">❌</button>
+    </li>
+  </ul>
+</div>
+
+<script>
+var app = angular.module("todoApp", []);
+
+app.factory("TodoFactory", function($http){
+  const baseUrl = "http://localhost:3000/api/todos";
+  return {
+    getTasks: () => $http.get(baseUrl),
+    addTask: (task) => $http.post(baseUrl, task),
+    updateTask: (task) => $http.put(`${baseUrl}/${task._id}`, task),
+    deleteTask: (id) => $http.delete(`${baseUrl}/${id}`)
+  };
+});
+
+app.controller("TodoController", function($scope, TodoFactory){
+  $scope.tasks = [];
+  $scope.newTask = "";
+  $scope.filterStatus = "";
+
+  const loadTasks = () => {
+    TodoFactory.getTasks().then(res => $scope.tasks = res.data);
+  }
+
+  $scope.addTask = function(){
+    if(!$scope.newTask) return;
+    TodoFactory.addTask({ name: $scope.newTask, completed:false }).then(() => {
+      $scope.newTask = "";
+      loadTasks();
+    });
+  }
+
+  $scope.updateTask = function(task){
+    TodoFactory.updateTask(task).then(loadTasks);
+  }
+
+  $scope.deleteTask = function(id){
+    TodoFactory.deleteTask(id).then(loadTasks);
+  }
+
+  loadTasks();
+});
+</script>
+
+</body>
+</html>

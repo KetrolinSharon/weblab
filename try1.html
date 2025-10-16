@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html ng-app="todoApp">
+<head>
+  <meta charset="UTF-8">
+  <title>Simple To-Do App</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.3/angular.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f0f0;
+      padding: 50px;
+      display: flex;
+      justify-content: center;
+    }
+    .todo-container {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      width: 300px;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    button {
+      padding: 8px;
+      border-radius: 5px;
+      border: none;
+      background-color: #007bff;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    ul {
+      list-style-type: none;
+      padding-left: 0;
+    }
+    li {
+      padding: 8px;
+      margin-bottom: 5px;
+      background-color: #e0e0e0;
+      border-radius: 5px;
+      display: flex;
+      justify-content: space-between;
+    }
+  </style>
+</head>
+<body ng-controller="TodoController">
+
+  <div class="todo-container">
+    <h2>To-Do List</h2>
+    <input type="text" ng-model="newTask" placeholder="Add new task..." />
+    <button ng-click="addTask()">Add</button>
+    <ul>
+      <li ng-repeat="task in tasks">
+        {{task}}
+        <button ng-click="removeTask($index)">Delete</button>
+      </li>
+    </ul>
+  </div>
+
+  <script>
+    var app = angular.module('todoApp', []);
+
+    // Service
+    app.service('TodoService', function($http) {
+      const API = 'http://localhost:3000/tasks';
+
+      this.getTasks = function() {
+        return $http.get(API).then(res => res.data);
+      };
+
+      this.addTask = function(task) {
+        return $http.post(API, { task }).then(res => res.data);
+      };
+
+      this.removeTask = function(index) {
+        return $http.delete(`${API}/${index}`).then(res => res.data);
+      };
+    });
+
+    // Controller
+    app.controller('TodoController', function($scope, TodoService) 
+    {
+
+      $scope.tasks = [];
+
+      function loadTasks() {
+        TodoService.getTasks().then(data => $scope.tasks = data);
+      }
+
+      loadTasks();
+
+      $scope.addTask = function() {
+        if($scope.newTask) {
+          TodoService.addTask($scope.newTask).then(data => {
+            $scope.tasks = data.tasks;
+            $scope.newTask = '';
+          });
+        }
+      };
+
+      $scope.removeTask = function(index) {
+        TodoService.removeTask(index).then(data => {
+          $scope.tasks = data.tasks;
+        });
+      };
+    });
+  </script>
+</body>
+</html>

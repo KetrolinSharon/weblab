@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="empApp">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Employee Management System</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+</head>
+
+<body ng-controller="EmpController">
+  <header>
+    <h1>Employee Management System</h1>
+  </header>
+
+  <main>
+    <section class="form-section">
+      <h2>Add / Update Employee</h2>
+      <form novalidate>
+        <input type="text" ng-model="emp.name" placeholder="Name" required>
+        <input type="text" ng-model="emp.position" placeholder="Position" required>
+        <input type="number" ng-model="emp.salary" placeholder="Salary" required min="1000">
+        <button type="button" ng-click="addEmployee()" ng-hide="editMode">Add Employee</button>
+        <button type="button" ng-click="updateEmployee()" ng-show="editMode">Update Employee</button>
+      </form>
+    </section>
+
+    <section class="table-section">
+      <h2>Employee List</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Position</th>
+            <th>Salary</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="e in employees">
+            <td>{{ e.name }}</td>
+            <td>{{ e.position }}</td>
+            <td>{{ e.salary }}</td>
+            <td>
+              <button class="edit" ng-click="editEmployee(e)">Edit</button>
+              <button class="delete" ng-click="deleteEmployee(e._id)">Delete</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Employee Management System | Designed with ❤️ using HTML5 & CSS3</p>
+  </footer>
+
+  <script>
+    var app = angular.module('empApp', []);
+    app.controller('EmpController', function($scope, $http) {
+      $scope.employees = [];
+      $scope.emp = {};
+      $scope.editMode = false;
+
+      function loadEmployees() {
+        $http.get('http://localhost:3000/employees').then(res => {
+          $scope.employees = res.data;
+        });
+      }
+      loadEmployees();
+
+      $scope.addEmployee = function() {
+        $http.post('http://localhost:3000/employees', $scope.emp).then(res => {
+          $scope.emp = {};
+          loadEmployees();
+        });
+      };
+
+      $scope.editEmployee = function(employee) {
+        $scope.emp = angular.copy(employee);
+        $scope.editMode = true;
+      };
+
+      $scope.updateEmployee = function() {
+        $http.put('http://localhost:3000/employees/' + $scope.emp._id, $scope.emp).then(res => {
+          $scope.emp = {};
+          $scope.editMode = false;
+          loadEmployees();
+        });
+      };
+
+      $scope.deleteEmployee = function(id) {
+        $http.delete('http://localhost:3000/employees/' + id).then(res => {
+          loadEmployees();
+        });
+      };
+    });
+  </script>
+</body>
+</html>

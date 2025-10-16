@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+    <style>
+        .student-card{
+            border-radius: 8px;
+            width: 60px;
+            height: 90px;
+            border-color: black;
+            padding: 45px 30px 30px 45px;
+            text-align: center;
+            background-color: antiquewhite;
+            
+        }
+    </style>
+
+    <body ng-app="stdApp" ng-controller="stdCtrl">
+        <h1>Student Dashboard</h1>
+        <p>Ennter the name:</p>
+        <input type="text" ng-model="name" placeholder="Name..."></input>
+        <div>
+           <student-card ng-repeat="s in students|filter:name" data="s"></student-card>
+        </div>
+        <script>
+            var app=angular.module('stdApp',[])
+            app.service('StudentService',function(){
+                this.getStudents=function(){
+                    return [
+                        {name:'Divya',mark:78},
+                        {name:'Ram',mark:89},
+                        {name:'Lavanya',mark:90}
+                    ];
+                };
+            });
+
+
+             app.factory('Studentfactory', function() {
+             var factory = {};
+
+                 factory.getStudents = function() {
+                return [
+                 { name: 'Divya', mark: 78 },
+                 { name: 'Ram', mark: 89 },
+                 { name: 'Lavanya', mark: 90 }
+             ];
+            };
+
+      return factory; // ✅ Must return an object
+    });                 
+
+            app.filter('gradefilter',function(){
+                return function(mark)
+                {
+                    if(mark>=90) return 'Distintion';
+                    else if(mark>=70) return 'Pass';
+                    else return 'Fail';
+                };
+            });
+
+            app.directive('studentCard',function(){
+                return{
+                    restrict:'E',
+                    scope:{data:'='},
+                    template:`<div class="student-card">
+                        <p>Name:{{data.name}}</p>
+                        <p>Mark:{{data.mark}}</p>
+                        <p>Grade:{{data.mark|gradefilter}}<p></div>`
+                };
+            });
+            app.controller('stdCtrl',function($scope,StudentService){
+                $scope.students=StudentService.getStudents();
+            });
+        </script>
+    </body>
+</html>
